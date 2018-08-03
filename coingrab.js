@@ -17,25 +17,3 @@ function update(){
 	    });
 	});
 }
-
-function xdupdate(){
-	var socket = new easyXDM.Socket({
-        remote: "https://www.coinspot.com.au/pubapi/latest", // the path to the provider
-        onMessage:function(message, origin) {
-        	console.log(message)
-            //do something with message
-        }
-    });
-
-
-}
-
-
-function sleep(milliseconds) {
-  var start = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds){
-      break;
-    }
-  }
-}
