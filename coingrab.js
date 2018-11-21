@@ -1,6 +1,8 @@
 var surfsite;
 var regex = /[+-]?\d+(\.\d+)?/g;
 var waveheightlist = [];
+var fullList = undefined;
+var titles = [];
 var firstUpdate = true;
 
 function initialise(){
@@ -35,20 +37,40 @@ function update(){
 	       	table = surfsite.getElementsByTagName('tr');
 
 	       	tablestring = 'table from the site: ' 
-
+	       	titles = []
+	       	var foundValues = []
 	       	for (var i in table){
 	       		tablestring += table[i].innerText;
+	       		if (i >= 1){
+	       			foundValues.push(table[i].innerText.match(regex).map(function(v) { return parseFloat(v); })[0]);
+	       			titles.push(table[i].innerText.split(':',1)[0]);
+	       		}
 	       	}
-
-	       	$('.greeting-content').append(tablestring);
-
-	       	waveheight = table[6].innerText.match(regex).map(function(v) { return parseFloat(v); })[0];
-			waveheightlist.push(waveheight);
-			if (waveheightlist.length > 100 ){
-				waveheightlist.splice(0,1);
+	       	if (fullList === undefined) {
+	       		fullList = []
+				for (var j in foundValues){
+					fullList.push([foundValues[j]])
+					chartString = 'chartDiv'+ j;
+					createChart(chartString, fullList[j], titles[j])
+				}
+			}else{
+				for (var j in foundValues){
+					fullList[j].push(foundValues[j]);
+					chartString = 'chartDiv'+ j;
+					createChart(chartString, fullList[j], titles[j])
+				}
 			}
-			createChart(waveheightlist);
-			writetofile(waveheightlist);
+
+	       	// $('.greeting-content').append(tablestring);
+
+
+	  //      	waveheight = table[6].innerText.match(regex).map(function(v) { return parseFloat(v); })[0];
+			// waveheightlist.push(waveheight);
+			// if (waveheightlist.length > 100 ){
+			// 	waveheightlist.splice(0,1);
+			// }
+			// createChart(waveheightlist);
+			// writetofile(waveheightlist);
 	    });
 	});
 }
@@ -56,7 +78,7 @@ function update(){
 setInterval(update, 60000)
 
 
-var createChart = function(data){
+var createChart = function(div, data, title){
 
 var times = []
 for (var i in data){
@@ -69,14 +91,14 @@ var trace1 = {
   mode: "lines",
   x: times,
   y: data,
-  line: {color: '#17BECF'}
+  line: {color: '#'+(Math.random()*0xFFFFFF<<0).toString(16)}
 }
 
 
 var data = [trace1];
     
 var layout = {
-  title: 'Surf heights collected', 
+  title: title, 
   xaxis: {
     type: 'minutes',
     title: 'minutes'
@@ -87,7 +109,7 @@ var layout = {
   },
 };
 
-Plotly.newPlot('chartDiv', data, layout);
+Plotly.newPlot(div, data, layout);
 
 }
 
