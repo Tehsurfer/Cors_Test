@@ -15,20 +15,22 @@
         <title>Blackfynn REST test</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/easyXDM/2.4.20/easyXDM.min.js"></script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
         <script src="coingrab.js"></script>
     </head>
 
     <body>
-        Let's try getting some prices from Bittrex:<br>
+        Let's try getting some surf data for Napier, the site will update every 10 minutes automatically<br>
         <br>
         Market:<br>
-        <input type="text" name="market" id="market" value="BTC-ETH"><br>
-        <input type="button" value='Get Market Prices' onclick="update()">
+        <input type="text" name="market" id="market" value="Useless text box"><br>
+        <input type="button" value='Get some surf data' id='surfButton' onclick="update()">
         <div>
             <p class="greeting-id">The bid price is: (make a request)</p>
             <p class="greeting-content">The ask price is: (make a request)</p>
         </div>
+        <div id='chartDiv'></div>
 
     </body>
 </html>
