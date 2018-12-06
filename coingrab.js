@@ -106,8 +106,8 @@ function get_json_data(callback){
 
 
 
-setInterval(readFile, 10000)
-setTimeout(setInterval(callPort, 10000), 3000)
+setInterval(readFile, 60000)
+setTimeout(setInterval(callPort, 60000), 3000)
 
 
 
@@ -116,7 +116,7 @@ var createChart = function(div, data, title){
 
 var times = []
 for (var i in data){
-	times.push(i);
+	times.push(i - data.length + 1);
 }
 
 var trace1 = {
@@ -135,7 +135,7 @@ var layout = {
   title: title, 
   xaxis: {
     type: 'minutes',
-    title: 'minutes'
+    title: 'minutes ago'
   }, 
   yaxis: {
     autorange: true, 
