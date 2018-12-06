@@ -22,7 +22,7 @@ function initialise(){
 
 function readFile(){
 	
-	fullList = get_json_data(callPort);
+	fullList = get_json_data();
 	console.log('fullList:' + fullList);
 
 }
@@ -54,12 +54,7 @@ function callPort(){
 	       		}
 	       	}
 	       	if (fullList === undefined) {
-	       		fullList = []
-				for (var j in foundValues){
-					fullList.push([foundValues[j]])
-					chartString = 'chartDiv'+ j;
-					createChart(chartString, fullList[j], titles[j])
-				}
+				get_json_data()
 			}else{
 				for (var j in foundValues){
 					fullList[j].push(foundValues[j]);
@@ -88,7 +83,7 @@ function callPort(){
 }
 
 
-function get_json_data(callback){
+function get_json_data(){
 	let req = new XMLHttpRequest();
 
 	req.onreadystatechange = () => {
