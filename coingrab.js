@@ -4,6 +4,9 @@ var waveheightlist = [];
 var fullList = undefined;
 var titles = [];
 var firstUpdate = true;
+var cors_api_url = 'https://cors-anywhere.herokuapp.com/';
+var target_url = "http://witswap.napierport.co.nz/witswap/(S(32tc1h2yg0hzxcbdg1qxgomg))/MobileWebForm1.aspx"
+
 
 function initialise(){
 // 	fs.readFile('surfheights.json', 'utf8', function readFileCallback(err, data){
@@ -17,10 +20,15 @@ function initialise(){
 // 	button.onclick = update;
 }
 
-function update(){
-	var cors_api_url = 'https://cors-anywhere.herokuapp.com/';
-	var target_url = "http://witswap.napierport.co.nz/witswap/(S(32tc1h2yg0hzxcbdg1qxgomg))/MobileWebForm1.aspx"
+function readFile(){
+	
+	fullList = get_json_data(callPort);
+	console.log('fullList:' + fullList);
 
+}
+
+function callPort(){
+	console.log(fullList)
 	$(document).ready(function() {
 	    $.ajax({
 	        url: cors_api_url + target_url,
@@ -59,6 +67,11 @@ function update(){
 					createChart(chartString, fullList[j], titles[j])
 				}
 			}
+			if (fullList.length > 1000){
+				fullList.shift();
+			}
+			writetofile(fullList);
+
 
 	       	// $('.greeting-content').append(tablestring);
 
@@ -74,7 +87,29 @@ function update(){
 	});
 }
 
-setInterval(update, 60000)
+
+function get_json_data(callback){
+	let req = new XMLHttpRequest();
+
+	req.onreadystatechange = () => {
+	  if (req.readyState == XMLHttpRequest.DONE) {
+	    console.log(req.responseText);
+	    fullList = JSON.parse(req.responseText);
+	    return req.responseText;
+	  }
+	};
+
+	req.open("GET", "https://api.jsonbin.io/b/5c099ef01deea01014bea7df", true);
+	req.setRequestHeader("secret-key", "$2a$10$j4tbSmRiOZs7Tx5qwRw1ounMt8CIA1vfwnS146CFpe0RFzrCU9ENq");
+	req.send();
+}
+
+
+
+setInterval(readFile, 10000)
+setTimeout(setInterval(callPort, 10000), 3000)
+
+
 
 
 var createChart = function(div, data, title){
@@ -113,10 +148,27 @@ Plotly.newPlot(div, data, layout);
 }
 
 var writetofile =  function(data){
+	console.log('in writetofile')
 
-	// var jsondata = JSON.stringify(obj)
+	var jsondata = JSON.stringify(data)
+	console.log(jsondata)
 
-	// fs.writeFile('surfheights.json', json, 'utf8', callback);
-}
+	req = new XMLHttpRequest();
+
+	req.onreadystatechange = () => {
+	  if (req.readyState == XMLHttpRequest.DONE) {
+	    console.log(req.responseText);
+	  }
+	};
+
+	req.open("PUT", "https://api.jsonbin.io/b/5c099ef01deea01014bea7df", true);
+	req.setRequestHeader("Content-type", "application/json");
+	req.setRequestHeader("secret-key", "$2a$10$j4tbSmRiOZs7Tx5qwRw1ounMt8CIA1vfwnS146CFpe0RFzrCU9ENq");
+	req.setRequestHeader("versioning", false);
+
+	req.send(jsondata);
+
+		// fs.writeFile('surfheights.json', json, 'utf8', callback);
+	}
 
 initialise();
